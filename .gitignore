@@ -1,0 +1,51 @@
+# --- 🚀 General ---
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+.env
+.env.local
+
+/backend/node_modules/
+
+# Logs & debug
+*.log
+logs/
+debug.log
+
+# --- 🐳 Docker ---
+/db_data/    # Database volume storage
+**/.dockerignore
+.docker-compose.override.yml
+
+# --- 🏗 Node.js (Next.js Frontend) ---
+/frontend/node_modules/
+/frontend/.next/
+/frontend/package-lock.json
+/frontend/build/
+**/node_modules
+/.next/
+/.next/cache/
+/yarn.lock
+npm-debug.log*
+yarn-error.log*
+
+# --- ⚙️ System & Editor files ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# --- 🏗 Build & Output ---
+/build/
+/dist/
+/coverage/
+
+# --- 🛡 Security ---
+/backend/.env
+/frontend/.env.local
+
