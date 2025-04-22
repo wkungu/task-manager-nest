@@ -6,4 +6,3 @@ module.exports = async () => {
   await prisma.task.deleteMany();
   await prisma.user.deleteMany();
 };
-s
