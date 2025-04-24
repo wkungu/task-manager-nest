@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.setGlobalPrefix('api');
   app.useLogger(['log', 'debug', 'error', 'verbose', 'warn']); // optional
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
@@ -44,6 +44,6 @@ async function bootstrap() {
 
   app.use('/docs-json', (req, res) => res.json(document));
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 8000);
 }
 bootstrap();
