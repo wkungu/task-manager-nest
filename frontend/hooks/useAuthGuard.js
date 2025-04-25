@@ -15,5 +15,5 @@ export function useAuthGuard() {
     }
   }, [status, router]);
 
-  return { isReady };
+  return { status, isReady };
 }
