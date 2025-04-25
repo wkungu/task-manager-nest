@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
+import { User } from '../common/decorators/user.decorator';
 
 @Controller('tasks')
 @ApiBearerAuth('access-token')
@@ -29,8 +30,8 @@ export class TasksController {
     type: [TaskResponseDto],
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  async getTasks(@Request() req) {
-    return this.tasksService.getTasks(req.user.userId);
+  async getTasks(@User() user) {
+    return this.tasksService.getTasks(user.id);
   }
 
   @Post()
@@ -42,8 +43,8 @@ export class TasksController {
   @ApiBody({ type: CreateTaskDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Access denied for the user' })
-  async createTask(@Request() req, @Body() body: CreateTaskDto) {
-    return this.tasksService.createTask(req.user.userId, body);
+  async createTask(@User() user, @Body() body: CreateTaskDto) {
+    return this.tasksService.createTask(user.id, body);
   }
 
   @Put(':id')
@@ -57,11 +58,11 @@ export class TasksController {
   @ApiForbiddenResponse({ description: 'Access denied' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async updateTask(
-    @Request() req,
+    @User() user,
     @Param('id') id: string,
     @Body() body: UpdateTaskDto,
   ) {
-    return this.tasksService.updateTask(+id, req.user.userId, body);
+    return this.tasksService.updateTask(+id, user.id, body);
   }
 
   @Delete(':id')
@@ -73,7 +74,7 @@ export class TasksController {
   @ApiNotFoundResponse({ description: 'Task not found' })
   @ApiForbiddenResponse({ description: 'Access denied' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  async deleteTask(@Request() req, @Param('id') id: string) {
-    return this.tasksService.deleteTask(+id, req.user.userId);
+  async deleteTask(@User() user, @Param('id') id: string) {
+    return this.tasksService.deleteTask(+id, user.id);
   }
 }

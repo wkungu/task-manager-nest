@@ -11,31 +11,31 @@ export default function TaskModal({ onUpdateTask, onCreateTask, taskToEdit }) {
   const isOpen = useSelector((state) => state.ui.taskModalOpen);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState(false); // default to false (Pending)
+  const [completed, setCompleted] = useState(false); // default to false (Pending)
 
   useEffect(() => {
     if (taskToEdit) {
       setTitle(taskToEdit.title);
       setDescription(taskToEdit.description);
-      setStatus(!!taskToEdit.status); // ensure boolean
+      setCompleted(taskToEdit.completed);
     } else {
       setTitle("");
       setDescription("");
-      setStatus(false);
+      setCompleted(false);
     }
   }, [taskToEdit]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title.trim()) {
-      const taskData = { title, description, status };
+      const taskData = { title, description, completed };
       if (taskToEdit) {
         onUpdateTask({ ...taskToEdit, ...taskData });
       } else {
         onCreateTask(taskData);
         setTitle("");
         setDescription("");
-        setStatus(false);
+        setCompleted(false);
       }
       dispatch(closeTaskModal());
     }
@@ -65,8 +65,8 @@ export default function TaskModal({ onUpdateTask, onCreateTask, taskToEdit }) {
           />
           <select
             className="w-full p-2 border rounded-md mt-2"
-            value={status ? "done" : "pending"}
-            onChange={(e) => setStatus(e.target.value === "done")}
+            value={completed ? "done" : "pending"}
+            onChange={(e) => setCompleted(e.target.value === "done")}
           >
             <option value="pending">Pending</option>
             <option value="done">Done</option>

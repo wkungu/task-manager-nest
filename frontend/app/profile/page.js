@@ -1,7 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/hooks/useAuthGuard";  // Import the useAuthGuard hook
 import { useEffect, useState } from "react";
 import { fetchCurrentUser, updateUser, updateUserPassword } from "@/lib/api";
 import { Input } from "@/components/ui/input";
@@ -12,9 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ProfilePage() {
-  const { status } = useSession();
-  const router = useRouter();
-
+  const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [passwordData, setPasswordData] = useState({
@@ -23,11 +20,16 @@ export default function ProfilePage() {
   });
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-  
+
+  // Apply the useAuthGuard to manage user authentication
+  const { isReady } = useAuthGuard();  // Use the hook here to check the auth status
+
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    } else if (status === "authenticated") {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
       fetchCurrentUser()
         .then((data) => {
           setUser(data);
@@ -37,7 +39,7 @@ export default function ProfilePage() {
         .catch((err) => console.error("Error fetching user", err))
         .finally(() => setLoading(false));
     }
-  }, [status, router, setValue]);
+  }, [isReady, setValue]);
 
   const handleProfileUpdate = async (data) => {
     try {
@@ -61,7 +63,15 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) return <div className="flex items-center flex-col"><Spinner /><span>Loading...</span></div>;
+  if (!hasMounted || loading || !isReady) {
+    return (
+      <div className="flex items-center flex-col">
+        <Spinner />
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
   if (!user) return null;
 
   return (
@@ -71,7 +81,6 @@ export default function ProfilePage() {
       </div>
 
       <section className="flex mt-10">
-
         <div className="w-full mb-6 mr-5 space-y-4">
           <form onSubmit={handleSubmit(handleProfileUpdate)}>
             <Input
@@ -110,13 +119,9 @@ export default function ProfilePage() {
           
           <Button onClick={handlePasswordUpdate}>Update Password</Button>
         </div>
-
       </section>
 
-      {/* Toast Container */}
-      <div>
-        <ToastContainer />
-      </div>
+      <ToastContainer />
     </>
   );
 }

@@ -10,8 +10,10 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+
+        const baseURL = process.env.NODE_ENV === "development" ? "http://localhost:8000" : "http://tasks-backend:8000"; // in Docker
         
-        const res = await fetch("http://task-manager-backend:8000/api/auth/login", { // task-manager-backend is the docker container running the backend service
+        const res = await fetch(`${baseURL}/api/auth/login`, { 
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
