@@ -2,7 +2,6 @@ services:
   db:
     container_name: tasks-db
     image: postgres:15
-    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
